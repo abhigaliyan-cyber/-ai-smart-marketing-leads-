@@ -18,41 +18,55 @@ const data={og:[['3 kW','6 × 550 W','3 kW','₹1,80,000'],['5 kW','10 × 550 W'
 const $=id=>document.getElementById(id);let leads=JSON.parse(localStorage.getItem('asm_leads')||'[]');let quotes=JSON.parse(localStorage.getItem('asm_quotes')||'[]');
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0);render()}
 function make(a){return a.map(x=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>${x[0]}</b><span class="price">${x[3]}</span></div><p class="muted">DCR Panels: ${x[1]} • Inverter: ${x[2]}</p></div>`).join('')}
-function saveLead(){ 
+function saveLead(){
   let n=$('nm').value.trim();
   let m=$('mb').value.trim();
   let c=$('ct').value.trim();
   let a=$('ad').value.trim();
   let s=$('sy').value;
-  let t=$('ty').value;
+  let status=$('st').value;
+  let fu=$('fu').value;
 
   if(!n || !m){
     alert('Name and mobile number are required.');
     return;
   }
 
-  let lead={n:n,m:m,c:c,a:a,s:s,t:t};
-  let leads=JSON.parse(localStorage.getItem('leads') || '[]');
+  if(m.length !== 10){
+    alert('Please enter a valid 10-digit mobile number.');
+    return;
+  }
+
+  let lead={
+    id:Date.now(),
+    n:n,
+    m:m,
+    c:c,
+    a:a,
+    s:s,
+    status:status,
+    fu:fu
+  };
+
   leads.unshift(lead);
-  localStorage.setItem('leads',JSON.stringify(leads));
+  localStorage.setItem('asm_leads',JSON.stringify(leads));
 
   let message =
     '🌞 New Solar Lead%0A%0A' +
     'Name: '+encodeURIComponent(n)+'%0A' +
     'Mobile: '+encodeURIComponent(m)+'%0A' +
     'City: '+encodeURIComponent(c)+'%0A' +
-    'Address: '+encodeURIComponent(a)+'%0A' +
+    'Notes: '+encodeURIComponent(a)+'%0A' +
     'System: '+encodeURIComponent(s)+'%0A' +
-    'Type: '+encodeURIComponent(t);
+    'Status: '+encodeURIComponent(status)+'%0A' +
+    'Follow-up: '+encodeURIComponent(fu);
 
-  window.open('https://wa.me/919997523898?text='+message,'_blank');
+  window.open(
+    'https://wa.me/919997523898?text='+message,
+    '_blank'
+  );
 
   render();
-  alert('Lead saved! WhatsApp is opening.');
+  toast('Lead saved successfully');
   show('leads');
-  }
-
-function saveQuote(){let n=$('qn').value.trim()||'Customer';let [p,sub,cost,sys]=$('qs').value.split('|');quotes.unshift({id:Date.now(),n,p:+p,sub:+sub,cost:+cost,sys});localStorage.setItem('asm_quotes',JSON.stringify(quotes));toast('Quotation saved');show('home')}
-function render(){let today=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short'});$('today').textContent=today;$('statLeads').textContent=leads.length;$('statFollow').textContent=leads.filter(x=>x.fu).length;$('statQuotes').textContent=quotes.length;$('statValue').textContent='₹'+quotes.reduce((a,x)=>a+x.cost,0).toLocaleString('en-IN');$('leadCount').textContent=leads.length+' total';$('og').innerHTML=make(data.og);$('hy').innerHTML=make(data.hy);$('list').innerHTML=leads.length?leads.map(x=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>${x.n}</b><span class="badge">${x.status}</span></div><p class="muted">📱 ${x.m} • 📍 ${x.c||'—'} • ☀️ ${x.s}</p><p>${x.a||'No notes'}</p>${x.fu?`<p class="muted">Follow-up: ${x.fu}</p>`:''}<a class="btn secondary" href="tel:${x.m}">Call</a> <a class="btn secondary" href="https://wa.me/91${x.m}">WhatsApp</a></div>`).join(''):'<div class="card empty">No leads yet.<br><button class="btn primary" style="margin-top:12px" onclick="show(\'lead\')">Add first lead</button></div>';$('recent').innerHTML=leads.slice(0,3).map(x=>`<div class="card" style="margin-bottom:8px"><div class="row"><b>${x.n}</b><span class="badge">${x.status}</span></div><span class="muted">${x.s} • ${x.c||'Area not set'}</span></div>`).join('')||'<div class="card empty muted">Your latest leads will appear here.</div>';let q=$('qs');q.onchange=()=>{let [p,sub,cost,sys]=q.value.split('|');$('qp').textContent='₹'+(+p).toLocaleString('en-IN');$('qsText').textContent='Subsidy ₹'+(+sub).toLocaleString('en-IN')+' • Customer ₹'+(+cost).toLocaleString('en-IN')};}
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}function clearData(){if(confirm('Clear all local leads and quotations?')){localStorage.removeItem('asm_leads');localStorage.removeItem('asm_quotes');leads=[];quotes=[];render();toast('Local data cleared')}}render();
-</script><script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});</script></body></html>
+}

@@ -32,7 +32,7 @@ function saveLead(){
   }
 
   let lead={n:n,m:m,c:c,a:a,s:s,t:t};
-  let leads=JSON.parse(localStorage.getItem('leads')||'[]');
+  let leads=JSON.parse(localStorage.getItem('leads') || '[]');
   leads.unshift(lead);
   localStorage.setItem('leads',JSON.stringify(leads));
 

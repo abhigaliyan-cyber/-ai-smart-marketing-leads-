@@ -18,7 +18,7 @@ const data={og:[['3 kW','6 × 550 W','3 kW','₹1,80,000'],['5 kW','10 × 550 W'
 const $=id=>document.getElementById(id);let leads=JSON.parse(localStorage.getItem('asm_leads')||'[]');let quotes=JSON.parse(localStorage.getItem('asm_quotes')||'[]');
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0);render()}
 function make(a){return a.map(x=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>${x[0]}</b><span class="price">${x[3]}</span></div><p class="muted">DCR Panels: ${x[1]} • Inverter: ${x[2]}</p></div>`).join('')}
-function saveLead()function saveLead(){
+function saveLead(){
   let n=$('nm').value.trim();
   let m=$('mb').value.trim();
   let c=$('ct').value.trim();

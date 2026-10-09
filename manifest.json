@@ -1,0 +1,9 @@
+{
+  "name":"AI Smart Marketing Leads",
+  "short_name":"AI Leads",
+  "start_url":"./AI_Smart_Marketing_Leads_Prototype.html",
+  "display":"standalone",
+  "background_color":"#ffffff",
+  "theme_color":"#087f9b",
+  "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]
+}
